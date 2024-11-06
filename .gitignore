@@ -1,2 +1,6 @@
 .env
 .env.test
+.ipynb_checkpoints
+.DS_Store
+Pipfile
+Pipfile.lock
