@@ -5,6 +5,8 @@
 import streamlit as st
 from io import StringIO
 from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter 
+
 import tempfile
 import os
 
@@ -21,9 +23,10 @@ class pdf_upload:
         
         # Load the PDF using PyPDFLoader with the temporary file path
             pdf_loader = PyPDFLoader(tmp_file_path)
-            self.documents = pdf_loader.load()
-        
-            st.write("PDF content loaded successfully!")
+            
+            self.documents = pdf_loader.load()[0].page_content
+            st.write(self.documents)
+            st.write("PDF content loaded successfully!")            
         
         # Clean up the temporary file 
             os.remove(tmp_file_path)
