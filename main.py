@@ -3,13 +3,12 @@ import sys
 import getpass
 import streamlit as st
 from io import StringIO
-from langchain_text_splitters import RecursiveCharacterTextSplitter 
-import tempfile
 
-from langchain.agents import initialize_agent, AgentType
-from langchain.utilities import WikipediaAPIWrapper
-from langchain.tools import Tool
+
+
 from langchain_openai import ChatOpenAI
+from langchain.agents import AgentExecutor, create_tool_calling_agent, load_tools
+from langchain_core.prompts import ChatPromptTemplate
 
 api_key = st.text_input("Enter your OpenAI API Key:", type="password")
 
@@ -37,21 +36,25 @@ if data_type == 'pdf':
 else:
     text = st.text_input("Enter your text here")
     st.write("Text input received!")
-    
-
-# Initialise the Wikipedia tool
-wikipedia_tool = WikipediaAPIWrapper()
-
-# Define a LangChain agent with the Wikipedia tool
-tools = [Tool.from_function(func=wikipedia_tool.run, name="Wikipedia Search", description="Search Wikipedia articles")]
 
 model = ChatOpenAI(model="gpt-3.5-turbo")
-# Initialise the agent
-agent = initialize_agent(tools, llm=model, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION)
+prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", "Find up to 3 articles relavant to the user input. Provide the title and \
+#the first 100 tokens of each article. Give the response in the JSON Format."),
+        ("human", "{input}"),
+        ("placeholder", "{agent_scratchpad}"),
+    ]
+)
+tools = load_tools(["wikipedia"])
+agent = create_tool_calling_agent(model, tools, prompt)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
-response = agent({"input": text})
-
-
+response = agent_executor.invoke(
+        {
+            "input":text
+        }
+    )
 # Display results
 st.write("Wikipedia Search Results:")
 st.write(response)
