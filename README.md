@@ -1,6 +1,6 @@
 # WikiSearch 
 
-This project is a Streamlit-based application that allows users to search for Wikipedia articles relevant to their text input. Users can upload a PDF, type text directly, and select the language for the Wikipedia search (English, Japanese, or French). The application then extracts the main content of the PDF or text input and uses LangChain with OpenAI’s API to fetch relevant Wikipedia articles
+This project is a Streamlit-based application that allows users to search for Wikipedia articles relevant to their text input. Users can upload a PDF, type text directly, and select the language for the Wikipedia search (English, Japanese, or French). The application then extracts the main content of the PDF or text input and uses LangChain with OpenAI’s API to fetch relevant Wikipedia articles.
 
 ## Features
 
